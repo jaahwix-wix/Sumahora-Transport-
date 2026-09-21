@@ -217,7 +217,7 @@ export function ReceiptModal({ isOpen, onClose, record, currency }: ReceiptModal
 
             {/* Legal Notice */}
             <p className="text-[9px] text-slate-400 text-center mt-3 pt-2 border-t border-slate-100">
-              Soul Transport &amp; Logistics Cross-Border Ticket Voucher. Valid across all 6 West African ECOWAS terminals. Present photo ID at coach boarding.
+              Sumahora Transport &amp; Logistics Cross-Border Ticket Voucher. Valid across all 6 West African ECOWAS terminals. Present photo ID at coach boarding.
             </p>
           </div>
 

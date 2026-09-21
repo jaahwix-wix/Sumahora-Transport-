@@ -103,7 +103,7 @@ export function BillingCheckoutModal({
                 {paymentCompleted ? 'Payment Confirmed & Receipt Issued' : 'Automated Billing & Secure Checkout'}
               </h3>
               <p className="text-[11px] text-orange-100">
-                Soul Transport & Logistics Automated Gateway
+                Sumahora Transport & Logistics Automated Gateway
               </p>
             </div>
           </div>
@@ -326,7 +326,7 @@ export function BillingCheckoutModal({
                 </div>
                 <h4 className="text-lg font-black text-white">Payment Authorized & Verified!</h4>
                 <p className="text-xs text-slate-400">
-                  Your official digital credential has been registered in the Soul Transport automated ledger.
+                  Your official digital credential has been registered in the Sumahora Transport automated ledger.
                 </p>
               </div>
 

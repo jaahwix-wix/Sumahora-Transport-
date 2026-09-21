@@ -60,15 +60,46 @@ export function useExchangeRates(): ExchangeRatesData {
   }, []);
 
   useEffect(() => {
-    fetchRates();
+    let ignore = false;
+
+    async function loadRates() {
+      try {
+        const res = await fetch('/api/exchange-rates');
+        if (!res.ok) return;
+        const data = await res.json();
+        if (ignore) return;
+        if (data?.rates) {
+          const newRates: Record<CurrencyCode, number> = {
+            USD: Number(data.rates.USD) || 1.0,
+            NGN: Number(data.rates.NGN) || 1485.50,
+            GHS: Number(data.rates.GHS) || 15.35,
+            SLE: Number(data.rates.SLE) || 22.90,
+            XOF: Number(data.rates.XOF) || 612.40,
+            GNF: Number(data.rates.GNF) || 8690.00,
+          };
+          setRates(newRates);
+          setIsLive(Boolean(data.isLive));
+          setSource(data.source || 'Live ECOWAS Forex Feed');
+          setLastUpdated(new Date());
+          updateLiveExchangeRates(newRates);
+        }
+      } catch (err) {
+        console.warn('Failed to fetch real-time exchange rates, using cached rates:', err);
+      }
+    }
+
+    loadRates();
 
     // Auto-refresh rates every 5 minutes
     const interval = setInterval(() => {
-      fetchRates();
+      loadRates();
     }, 5 * 60 * 1000);
 
-    return () => clearInterval(interval);
-  }, [fetchRates]);
+    return () => {
+      ignore = true;
+      clearInterval(interval);
+    };
+  }, []);
 
   const convert = useCallback((amount: number, from: CurrencyCode, to: CurrencyCode) => {
     const fromRate = rates[from] || 1;

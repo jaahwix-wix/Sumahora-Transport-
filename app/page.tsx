@@ -400,7 +400,7 @@ export default function Home() {
             </div>
 
             <p className="text-[11px] text-slate-400">
-              © 2026 Soul Transport &amp; Logistics Inc. All rights reserved. ECOWAS FastTrack Certified.
+              © 2026 Sumahora Transport &amp; Logistics Inc. All rights reserved. ECOWAS FastTrack Certified.
             </p>
           </div>
         </footer>

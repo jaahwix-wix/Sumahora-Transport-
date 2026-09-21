@@ -128,7 +128,7 @@ export function useNotifications() {
       if (typeof window !== 'undefined' && 'Notification' in window) {
         if (Notification.permission === 'granted') {
           try {
-            const nativeNotif = new Notification(`Soul Transport: ${title}`, {
+            const nativeNotif = new Notification(`Sumahora Transport: ${title}`, {
               body,
               icon: '/st-logo.svg',
               badge: '/st-logo.svg',

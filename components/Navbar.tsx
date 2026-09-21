@@ -92,13 +92,13 @@ export function Navbar({
               <div className="w-full h-full bg-slate-950 rounded-[10px] flex items-center justify-center border border-orange-400/40">
                 <div className="text-center font-black tracking-tight leading-none">
                   <span className="text-orange-400 text-sm block">ST</span>
-                  <span className="text-[9px] text-white/90 uppercase tracking-widest font-bold">SOUL</span>
+                  <span className="text-[9px] text-white/90 uppercase tracking-widest font-bold">SUMAHORA</span>
                 </div>
               </div>
             </div>
             <div>
               <div className="flex items-center space-x-1.5">
-                <span className="text-xl font-black tracking-tight text-white">SOUL</span>
+                <span className="text-xl font-black tracking-tight text-white">SUMAHORA</span>
                 <span className="text-xl font-black tracking-tight text-orange-500">TRANSPORT</span>
               </div>
               <p className="text-[11px] text-slate-400 font-medium hidden sm:block">

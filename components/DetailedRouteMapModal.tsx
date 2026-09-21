@@ -38,6 +38,16 @@ interface DetailedRouteMapModalProps {
   activeTrip?: BusTrip;
 }
 
+// Station route order along the coastal corridor
+const STATION_ORDER = [
+  'station-conakry',
+  'station-freetown',
+  'station-monrovia',
+  'station-abidjan',
+  'station-accra',
+  'station-lagos',
+];
+
 export function DetailedRouteMapModal({
   isOpen,
   onClose,
@@ -53,25 +63,15 @@ export function DetailedRouteMapModal({
   const [showWeather, setShowWeather] = useState<boolean>(true);
   const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
 
-  // Station route order along the coastal corridor
-  const stationOrder = [
-    'station-conakry',
-    'station-freetown',
-    'station-monrovia',
-    'station-abidjan',
-    'station-accra',
-    'station-lagos',
-  ];
-
-  const originIdx = stationOrder.indexOf(originStation.id);
-  const destIdx = stationOrder.indexOf(destinationStation.id);
+  const originIdx = STATION_ORDER.indexOf(originStation.id);
+  const destIdx = STATION_ORDER.indexOf(destinationStation.id);
   const minIdx = Math.min(originIdx, destIdx);
   const maxIdx = Math.max(originIdx, destIdx);
 
   // Stations traversed on this trip
   const routeStations = useMemo(() => {
     return STATIONS.filter((s) => {
-      const idx = stationOrder.indexOf(s.id);
+      const idx = STATION_ORDER.indexOf(s.id);
       return idx >= minIdx && idx <= maxIdx;
     });
   }, [minIdx, maxIdx]);
@@ -507,11 +507,11 @@ export function DetailedRouteMapModal({
                   <div className="grid grid-cols-2 gap-2">
                     <div className="bg-slate-900 p-2.5 rounded-xl border border-slate-800">
                       <span className="text-[10px] text-slate-400 block">Dispatch Phone</span>
-                      <p className="text-orange-400 font-mono font-bold text-[11px] mt-0.5">{selectedStation.phone}</p>
+                      <p className="text-orange-400 font-mono font-bold text-[11px] mt-0.5">{selectedStation.phoneNumbers?.[0] || 'N/A'}</p>
                     </div>
                     <div className="bg-slate-900 p-2.5 rounded-xl border border-slate-800">
                       <span className="text-[10px] text-slate-400 block">Local Currency</span>
-                      <p className="text-emerald-400 font-mono font-bold text-[11px] mt-0.5">{selectedStation.localCurrency}</p>
+                      <p className="text-emerald-400 font-mono font-bold text-[11px] mt-0.5">{selectedStation.currency}</p>
                     </div>
                   </div>
 

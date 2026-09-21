@@ -16,10 +16,14 @@ import {
   Menu, 
   X, 
   Sparkles,
-  ChevronDown
+  ChevronDown,
+  RefreshCw,
+  Calculator,
+  ArrowRightLeft
 } from 'lucide-react';
 import { CurrencyCode, UserProfile } from '@/lib/types';
 import { EXCHANGE_RATES, convertCurrency } from '@/lib/data';
+import { useExchangeRates } from '@/lib/useExchangeRates';
 import { STLogo } from './STLogo';
 
 interface SidebarProps {
@@ -51,6 +55,21 @@ export function Sidebar({
 }: SidebarProps) {
   const [quickTrackInput, setQuickTrackInput] = useState('');
   const [mobileOpen, setMobileOpen] = useState(false);
+
+  // Automated Real-Time Exchange Rates & Converter
+  const {
+    rates,
+    isLive,
+    loading: ratesLoading,
+    lastUpdated,
+    source: ratesSource,
+    refreshRates,
+    convert
+  } = useExchangeRates();
+
+  const [isConverterOpen, setIsConverterOpen] = useState(true);
+  const [convertAmount, setConvertAmount] = useState<string>('45');
+  const [convertFrom, setConvertFrom] = useState<CurrencyCode>('USD');
 
   const handleTrackSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -114,7 +133,7 @@ export function Sidebar({
           <div>
             <div className="flex items-center space-x-1.5">
               <h1 className="text-base font-black text-white tracking-tight leading-none">
-                SOUL TRANSPORT
+                SUMAHORA TRANSPORT
               </h1>
             </div>
             <p className="text-[10px] font-bold text-orange-500 uppercase tracking-wider mt-1">
@@ -246,31 +265,210 @@ export function Sidebar({
           </button>
         </div>
 
-        {/* Currency Switcher */}
+        {/* Enhanced Currency Selector & Automated Exchange Rate Converter */}
         <div className="pt-2">
-          <div className="bg-slate-950 border border-slate-800 rounded-2xl p-2.5">
-            <div className="flex items-center justify-between mb-1.5 px-1">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
-                Display Currency
-              </span>
-              <span className="text-[10px] font-mono text-orange-400">
-                {EXCHANGE_RATES[currency].symbol}
-              </span>
-            </div>
-            <div className="grid grid-cols-3 gap-1">
-              {(['USD', 'NGN', 'GHS', 'SLE', 'XOF', 'GNF'] as CurrencyCode[]).map((c) => (
-                <button
-                  key={c}
-                  onClick={() => setCurrency(c)}
-                  className={`py-1 rounded-lg text-[10px] font-bold font-mono transition ${
-                    currency === c
-                      ? 'bg-orange-600 text-white shadow'
-                      : 'bg-slate-900 text-slate-400 hover:text-white'
+          <div className="bg-slate-950 border border-slate-800 rounded-2xl p-3 space-y-2.5 shadow-lg">
+            {/* Currency Header with Live Indicator & Refresh Trigger */}
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-1.5">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-slate-300">
+                  Currency &amp; Forex
+                </span>
+                <span 
+                  className={`inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[9px] font-bold ${
+                    isLive 
+                      ? 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/30' 
+                      : 'bg-amber-500/15 text-amber-400 border border-amber-500/30'
                   }`}
+                  title={ratesSource}
                 >
-                  {c}
-                </button>
-              ))}
+                  <span className={`w-1.5 h-1.5 rounded-full ${isLive ? 'bg-emerald-400 animate-pulse' : 'bg-amber-400'}`}></span>
+                  {isLive ? 'LIVE' : 'PARITY'}
+                </span>
+              </div>
+
+              <button
+                type="button"
+                id="sidebar-refresh-rates-btn"
+                onClick={() => refreshRates()}
+                disabled={ratesLoading}
+                className="text-slate-400 hover:text-orange-400 transition p-1 hover:bg-slate-900 rounded-md cursor-pointer disabled:opacity-50"
+                title={`Refresh real-time rates (Source: ${ratesSource})`}
+              >
+                <RefreshCw className={`w-3 h-3 ${ratesLoading ? 'animate-spin text-orange-400' : ''}`} />
+              </button>
+            </div>
+
+            {/* Quick Currency Selector Grid */}
+            <div className="grid grid-cols-3 gap-1">
+              {(['USD', 'NGN', 'GHS', 'SLE', 'XOF', 'GNF'] as CurrencyCode[]).map((c) => {
+                const isSelected = currency === c;
+                const meta = EXCHANGE_RATES[c];
+                return (
+                  <button
+                    key={c}
+                    type="button"
+                    id={`sidebar-curr-btn-${c}`}
+                    onClick={() => {
+                      setCurrency(c);
+                    }}
+                    className={`py-1.5 px-2 rounded-xl text-left transition flex flex-col justify-between border cursor-pointer ${
+                      isSelected
+                        ? 'bg-orange-600 text-white border-orange-500 shadow-md shadow-orange-950/40'
+                        : 'bg-slate-900 text-slate-300 border-slate-800 hover:border-slate-700 hover:bg-slate-850'
+                    }`}
+                  >
+                    <div className="flex items-center justify-between w-full">
+                      <span className="font-mono text-[11px] font-black">{c}</span>
+                      <span className={`text-[10px] font-mono ${isSelected ? 'text-white' : 'text-orange-400 font-bold'}`}>
+                        {meta.symbol}
+                      </span>
+                    </div>
+                    <span className={`text-[8px] truncate leading-tight mt-0.5 ${isSelected ? 'text-orange-100' : 'text-slate-400'}`}>
+                      {meta.name.split(' ')[0]}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Active Parity Banner */}
+            <div className="bg-slate-900/80 rounded-xl p-2 border border-slate-800/80 text-[10px] space-y-1">
+              <div className="flex items-center justify-between text-slate-400">
+                <span>Active Parity Rate:</span>
+                <span className="text-white font-mono font-bold">
+                  {currency === 'USD' 
+                    ? `1 USD = ₦${Math.round(rates.NGN || 1485.5).toLocaleString()}` 
+                    : `1 USD = ${convert(1, 'USD', currency).formatted}`}
+                </span>
+              </div>
+              <div className="flex items-center justify-between text-[9px] text-slate-500 pt-0.5 border-t border-slate-800/60">
+                <span className="truncate max-w-[130px]">{ratesSource}</span>
+                <span>
+                  {lastUpdated 
+                    ? lastUpdated.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                    : 'Real-Time'}
+                </span>
+              </div>
+            </div>
+
+            {/* Expandable Automated Converter & Cost Estimator */}
+            <div className="pt-0.5">
+              <button
+                type="button"
+                id="toggle-currency-converter-btn"
+                onClick={() => setIsConverterOpen(!isConverterOpen)}
+                className="w-full py-1.5 px-2 bg-slate-900 hover:bg-slate-850 border border-slate-800 hover:border-orange-500/40 rounded-xl text-[10px] font-bold text-slate-300 hover:text-white flex items-center justify-between transition cursor-pointer"
+              >
+                <div className="flex items-center space-x-1.5 text-orange-400">
+                  <Calculator className="w-3.5 h-3.5" />
+                  <span className="text-white">Automated ECOWAS Converter</span>
+                </div>
+                <ChevronDown className={`w-3.5 h-3.5 text-slate-400 transition-transform duration-200 ${isConverterOpen ? 'rotate-180 text-orange-400' : ''}`} />
+              </button>
+
+              {isConverterOpen && (
+                <div className="space-y-2 pt-2 text-[10px]">
+                  {/* Amount Input & Source Selector */}
+                  <div className="space-y-1">
+                    <div className="flex items-center justify-between text-slate-400 text-[9px]">
+                      <span>Enter Cost / Fare:</span>
+                      <span className="text-orange-400 font-mono">Live Sync</span>
+                    </div>
+                    <div className="flex items-center space-x-1.5">
+                      <input
+                        type="number"
+                        id="sidebar-converter-amount-input"
+                        min="0"
+                        step="any"
+                        value={convertAmount}
+                        onChange={(e) => setConvertAmount(e.target.value)}
+                        placeholder="Amount"
+                        className="w-full bg-slate-900 border border-slate-700/80 rounded-lg px-2 py-1 text-xs text-white font-mono focus:outline-none focus:border-orange-500"
+                      />
+                      <select
+                        id="sidebar-converter-from-select"
+                        value={convertFrom}
+                        onChange={(e) => setConvertFrom(e.target.value as CurrencyCode)}
+                        className="bg-slate-900 border border-slate-700/80 rounded-lg px-2 py-1 text-xs text-orange-400 font-mono font-bold focus:outline-none focus:border-orange-500 cursor-pointer"
+                      >
+                        {(['USD', 'NGN', 'GHS', 'SLE', 'XOF', 'GNF'] as CurrencyCode[]).map((c) => (
+                          <option key={c} value={c} className="bg-slate-950 text-white font-mono">
+                            {c}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+
+                  {/* Fare Presets */}
+                  <div className="flex items-center space-x-1">
+                    {[
+                      { label: '$25 Econ', usd: 25 },
+                      { label: '$45 VIP', usd: 45 },
+                      { label: '$80 Cargo', usd: 80 },
+                    ].map((preset) => (
+                      <button
+                        key={preset.label}
+                        type="button"
+                        onClick={() => {
+                          setConvertFrom('USD');
+                          setConvertAmount(preset.usd.toString());
+                        }}
+                        className="flex-1 py-0.5 px-1 bg-slate-900 hover:bg-slate-800 border border-slate-800 text-[8.5px] font-semibold text-slate-400 hover:text-white rounded-md transition text-center cursor-pointer"
+                      >
+                        {preset.label}
+                      </button>
+                    ))}
+                  </div>
+
+                  {/* Calculated Local ECOWAS Costs Matrix */}
+                  <div className="bg-slate-900/90 rounded-xl p-2 border border-slate-800 space-y-1">
+                    <span className="text-[8.5px] font-bold uppercase tracking-wider text-slate-400 block pb-1 border-b border-slate-800">
+                      Converted Local ECOWAS Costs:
+                    </span>
+                    <div className="space-y-1">
+                      {(['NGN', 'GHS', 'GNF', 'XOF', 'SLE', 'USD'] as CurrencyCode[])
+                        .filter((c) => c !== convertFrom)
+                        .map((targetCur) => {
+                          const numVal = parseFloat(convertAmount) || 0;
+                          const result = convert(numVal, convertFrom, targetCur);
+                          const countryLabels: Record<CurrencyCode, string> = {
+                            USD: 'Base Interbank',
+                            NGN: 'Nigeria (Lagos)',
+                            GHS: 'Ghana (Accra)',
+                            GNF: 'Guinea (Conakry)',
+                            XOF: "Côte d'Ivoire (Abidjan)",
+                            SLE: 'Sierra Leone (Freetown)',
+                          };
+                          const isAppCur = currency === targetCur;
+                          return (
+                            <div
+                              key={targetCur}
+                              onClick={() => setCurrency(targetCur)}
+                              className={`flex items-center justify-between py-1 px-1.5 rounded-lg transition cursor-pointer group ${
+                                isAppCur ? 'bg-orange-600/20 border border-orange-500/30' : 'hover:bg-slate-800/80'
+                              }`}
+                              title={`Click to set ${targetCur} as app currency`}
+                            >
+                              <div className="flex items-center space-x-1.5 min-w-0">
+                                <span className={`font-mono font-bold text-[10px] ${isAppCur ? 'text-orange-400' : 'text-slate-300 group-hover:text-orange-400'}`}>
+                                  {targetCur}
+                                </span>
+                                <span className="text-[8.5px] text-slate-500 truncate">
+                                  {countryLabels[targetCur]}
+                                </span>
+                              </div>
+                              <span className={`font-mono font-bold text-[10.5px] ${isAppCur ? 'text-orange-400' : 'text-white group-hover:text-orange-400'}`}>
+                                {result.formatted}
+                              </span>
+                            </div>
+                          );
+                        })}
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>

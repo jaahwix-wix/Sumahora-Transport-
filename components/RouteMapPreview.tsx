@@ -10,7 +10,8 @@ import {
   ShieldCheck, 
   Zap, 
   CheckCircle2,
-  Sparkles
+  Sparkles,
+  Maximize2
 } from 'lucide-react';
 import { Station } from '@/lib/types';
 import { STATIONS, getRouteDistanceKm } from '@/lib/data';
@@ -19,12 +20,14 @@ interface RouteMapPreviewProps {
   originStation: Station;
   destinationStation: Station;
   busClass?: string;
+  onOpenFullMap?: () => void;
 }
 
 export function RouteMapPreview({
   originStation,
   destinationStation,
   busClass = 'VIP Royal Sleeper',
+  onOpenFullMap,
 }: RouteMapPreviewProps) {
   const distanceKm = getRouteDistanceKm(originStation.id, destinationStation.id);
 
@@ -92,8 +95,8 @@ export function RouteMapPreview({
           </div>
         </div>
 
-        {/* Telemetry Metric Badges */}
-        <div className="flex items-center space-x-2 shrink-0">
+        {/* Telemetry Metric Badges & Full Map Trigger */}
+        <div className="flex items-center space-x-2 shrink-0 flex-wrap gap-y-1.5">
           <div className="bg-slate-950 border border-slate-800 px-2.5 py-1 rounded-xl text-right">
             <span className="text-[9px] uppercase font-bold text-slate-400 block leading-none">Corridor Distance</span>
             <span className="text-xs font-mono font-black text-orange-400 leading-none">
@@ -107,11 +110,35 @@ export function RouteMapPreview({
               ~{formattedDuration}
             </span>
           </div>
+
+          {onOpenFullMap && (
+            <button
+              type="button"
+              id="route-preview-open-full-map-btn"
+              onClick={onOpenFullMap}
+              className="flex items-center space-x-1.5 px-3 py-1.5 bg-orange-600 hover:bg-orange-500 text-white rounded-xl text-xs font-bold transition shadow-md shadow-orange-950/40 hover:scale-105 active:scale-95 cursor-pointer ml-1"
+              title="Open full interactive corridor map"
+            >
+              <Maximize2 className="w-3.5 h-3.5" />
+              <span>Open Full Map</span>
+            </button>
+          )}
         </div>
       </div>
 
       {/* Compact Interactive Map Canvas */}
       <div className="relative w-full h-[200px] sm:h-[220px] bg-gradient-to-b from-slate-950 to-slate-900 rounded-xl border border-slate-800 overflow-hidden select-none">
+        {onOpenFullMap && (
+          <button
+            type="button"
+            onClick={onOpenFullMap}
+            className="absolute top-2.5 right-2.5 z-20 flex items-center space-x-1.5 px-2.5 py-1 bg-slate-900/90 hover:bg-orange-600 text-slate-200 hover:text-white rounded-lg border border-slate-700/80 text-[11px] font-bold transition backdrop-blur-md shadow-lg cursor-pointer"
+            title="Expand detailed interactive corridor map"
+          >
+            <Maximize2 className="w-3 h-3 text-orange-400" />
+            <span>Open Full Map</span>
+          </button>
+        )}
         {/* Radar grid lines */}
         <div className="absolute inset-0 opacity-15 pointer-events-none flex items-center justify-center">
           <div className="w-[360px] h-[360px] rounded-full border border-dashed border-orange-500"></div>

@@ -19,12 +19,15 @@ import {
   Wifi,
   Coffee,
   CheckCircle2,
-  ChevronDown
+  ChevronDown,
+  Maximize2,
+  Map
 } from 'lucide-react';
 import { Station, BusTrip, CurrencyCode, UserProfile } from '@/lib/types';
 import { STATIONS, INITIAL_BUS_TRIPS, convertCurrency, getRouteDistanceKm } from '@/lib/data';
 import { RouteCalendar } from './RouteCalendar';
 import { RouteMapPreview } from './RouteMapPreview';
+import { DetailedRouteMapModal } from './DetailedRouteMapModal';
 
 interface BookingViewProps {
   currency: CurrencyCode;
@@ -255,6 +258,7 @@ export function BookingView({
   }, [corridorTrips, selectedTripId]);
 
   const [selectedSeats, setSelectedSeats] = useState<number[]>([7]);
+  const [isFullMapOpen, setIsFullMapOpen] = useState<boolean>(false);
   const [passengerName, setPassengerName] = useState<string>(user?.name || 'Amara Sesay');
   const [passengerPhone, setPassengerPhone] = useState<string>(user?.phone || '+234 803 236 7381');
   const [passengerEmail, setPassengerEmail] = useState<string>(user?.email || 'amara.sesay@gmail.com');
@@ -349,7 +353,7 @@ export function BookingView({
               </h2>
             </div>
             <p className="text-xs text-slate-400 mt-1 max-w-2xl">
-              Travel comfortably with Soul Transport across Lagos, Accra, Abidjan, Monrovia, Freetown, and Conakry. 
+              Travel comfortably with Sumahora Transport across Lagos, Accra, Abidjan, Monrovia, Freetown, and Conakry. 
               Enjoy air conditioning, Starlink WiFi, and automated ECOWAS border clearance.
             </p>
           </div>
@@ -374,10 +378,22 @@ export function BookingView({
         <div className="lg:col-span-7 space-y-6">
           {/* Station Selection */}
           <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl space-y-4">
-            <h3 className="text-xs font-bold text-slate-300 uppercase tracking-wider flex items-center gap-2">
-              <MapPin className="w-4 h-4 text-orange-500" />
-              1. Select Origin &amp; Destination Terminals
-            </h3>
+            <div className="flex items-center justify-between flex-wrap gap-2">
+              <h3 className="text-xs font-bold text-slate-300 uppercase tracking-wider flex items-center gap-2">
+                <MapPin className="w-4 h-4 text-orange-500" />
+                1. Select Origin &amp; Destination Terminals
+              </h3>
+              <button
+                type="button"
+                id="open-full-map-btn"
+                onClick={() => setIsFullMapOpen(true)}
+                className="flex items-center space-x-1.5 px-3 py-1.5 bg-slate-800 hover:bg-orange-600 text-slate-300 hover:text-white rounded-xl text-xs font-bold transition border border-slate-700 hover:border-orange-500 cursor-pointer shadow-sm group"
+                title="Open detailed interactive corridor map"
+              >
+                <Maximize2 className="w-3.5 h-3.5 text-orange-400 group-hover:text-white transition" />
+                <span>Open Full Map</span>
+              </button>
+            </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-11 gap-3 items-center">
               {/* Origin */}
@@ -444,6 +460,7 @@ export function BookingView({
             originStation={originStation}
             destinationStation={destinationStation}
             busClass={busClass}
+            onOpenFullMap={() => setIsFullMapOpen(true)}
           />
 
           {/* Available Bus Trips & Sort / Filter Bar */}
@@ -843,6 +860,16 @@ export function BookingView({
           </div>
         </div>
       </form>
+
+      {/* Detailed Interactive Route Map Modal */}
+      <DetailedRouteMapModal
+        isOpen={isFullMapOpen}
+        onClose={() => setIsFullMapOpen(false)}
+        originStation={originStation}
+        destinationStation={destinationStation}
+        busClass={busClass}
+        activeTrip={activeTrip}
+      />
     </div>
   );
 }
