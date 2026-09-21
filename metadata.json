@@ -1,0 +1,6 @@
+{
+  "name": "Sumahora Transport",
+  "description": "Professional modern West Africa cross-border passenger transportation and parcel logistics system with real-time tracking, secure authentication, and automated billing.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
