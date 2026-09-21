@@ -279,7 +279,7 @@ export function BillingCheckoutModal({
                     <div>
                       <p className="text-[10px] text-slate-400">Bank: Ecobank Transnational / UBA</p>
                       <p className="font-mono font-black text-white text-sm">0198234812</p>
-                      <p className="text-[10px] text-orange-400">Acc Name: SOUL TRANSPORT LOGISTICS</p>
+                      <p className="text-[10px] text-orange-400">Acc Name: SUMAHORA TRANSPORT LOGISTICS</p>
                     </div>
                     <button
                       type="button"
@@ -340,7 +340,7 @@ export function BillingCheckoutModal({
                     </div>
                     <div>
                       <p className="font-bold text-white text-xs leading-none">
-                        SOUL TRANSPORT & LOGISTICS
+                        SUMAHORA TRANSPORT & LOGISTICS
                       </p>
                       <span className="text-[10px] text-slate-400">
                         {isPassenger ? 'Official Passenger Boarding Pass' : 'Official Cargo Consignment Waybill'}

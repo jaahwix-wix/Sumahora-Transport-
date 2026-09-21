@@ -75,7 +75,7 @@ export function ReceiptModal({ isOpen, onClose, record, currency }: ReceiptModal
                 <STLogo size={44} glow={false} />
                 <div>
                   <h4 className="text-sm font-black text-slate-900 tracking-tight leading-none">
-                    SOUL TRANSPORT &amp; LOGISTICS
+                    SUMAHORA TRANSPORT &amp; LOGISTICS
                   </h4>
                   <p className="text-[10px] font-bold text-orange-600 uppercase tracking-wider mt-1">
                     ECOWAS Express Cross-Border Network

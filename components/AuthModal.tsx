@@ -56,7 +56,7 @@ export function AuthModal({
         id: `user-${Date.now()}`,
         name: fullName || (phoneNumber.includes('234') ? 'Oluwaseun Adeyemi' : 'Amara Sesay'),
         role,
-        email: `${(fullName || 'user').toLowerCase().replace(/\s+/g, '.')}@soultransport.com`,
+        email: `${(fullName || 'user').toLowerCase().replace(/\s+/g, '.')}@sumahoratransport.com`,
         phone: phoneNumber,
         country: phoneNumber.startsWith('+233') ? 'Ghana' : phoneNumber.startsWith('+232') ? 'Sierra Leone' : 'Nigeria',
         preferredCurrency: currency,

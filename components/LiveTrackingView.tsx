@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useSyncExternalStore } from 'react';
 import { 
   Radio, 
   MapPin, 
@@ -34,6 +34,8 @@ interface LiveTrackingViewProps {
   onSelectBooking: (trip: BusTrip) => void;
 }
 
+const emptySubscribe = () => () => {};
+
 export function LiveTrackingView({
   busTrips,
   cargoShipments,
@@ -41,6 +43,7 @@ export function LiveTrackingView({
   selectedTrackingCode,
   onSelectBooking,
 }: LiveTrackingViewProps) {
+  const isMounted = useSyncExternalStore(emptySubscribe, () => true, () => false);
   const [selectedTripId, setSelectedTripId] = useState<string>(busTrips[0]?.id || '');
   const [selectedCargoTracking, setSelectedCargoTracking] = useState<string>(
     selectedTrackingCode || cargoShipments[0]?.trackingNumber || ''
@@ -182,8 +185,8 @@ export function LiveTrackingView({
               >
                 {simulationSpeed}x
               </button>
-              <span className="text-[10px] text-slate-500 font-mono hidden md:inline">
-                Ping: {lastPingTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
+              <span className="text-[10px] text-slate-500 font-mono hidden md:inline" suppressHydrationWarning>
+                Ping: {isMounted ? lastPingTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }) : '--:--:--'}
               </span>
             </div>
           </div>

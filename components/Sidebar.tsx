@@ -344,7 +344,7 @@ export function Sidebar({
               </div>
               <div className="flex items-center justify-between text-[9px] text-slate-500 pt-0.5 border-t border-slate-800/60">
                 <span className="truncate max-w-[130px]">{ratesSource}</span>
-                <span>
+                <span suppressHydrationWarning>
                   {lastUpdated 
                     ? lastUpdated.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
                     : 'Real-Time'}
@@ -559,7 +559,7 @@ export function Sidebar({
           <STLogo size={34} glow={false} />
           <div>
             <h2 className="text-xs font-black tracking-tight leading-none text-white">
-              SOUL TRANSPORT
+              SUMAHORA TRANSPORT
             </h2>
             <p className="text-[9px] text-orange-400 font-bold uppercase mt-0.5">
               West Africa Express

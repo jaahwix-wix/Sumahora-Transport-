@@ -386,7 +386,7 @@ export default function Home() {
             <div className="flex items-center space-x-3">
               <STLogo size={36} glow={false} />
               <div>
-                <p className="font-bold text-white text-sm">SOUL TRANSPORT &amp; LOGISTICS</p>
+                <p className="font-bold text-white text-sm">SUMAHORA TRANSPORT &amp; LOGISTICS</p>
                 <p className="text-[11px] text-slate-400">
                   For Your Convenient and Affordable Transport and Logistics Services Across West Africa
                 </p>
